@@ -121,23 +121,23 @@ export const projects = [
     repository: 'https://github.com/mohitthakur22/task-manager-app',
     deployedLink: 'https://task-manager-app-git-main-mohitthakur22s-projects.vercel.app/',
     image: '📋',
-  },
-  {
-    id: 'proj-2',
-    title: 'E-Commerce Store Frontend',
-    description: 'Modern responsive e-commerce platform with product filtering, shopping cart, and checkout flow.',
-    tags: ['React.js', 'Redux', 'Tailwind CSS', 'Stripe API'],
-    repository: 'https://github.com/mohitthakur22',
-    image: '🛒',
-  },
-  {
-    id: 'proj-3',
-    title: 'Weather App',
-    description: 'Real-time weather application with location-based forecasts and weather analytics.',
-    tags: ['React.js', 'OpenWeather API', 'Axios', 'Chart.js'],
-    repository: 'https://github.com/mohitthakur22',
-    image: '🌤️',
-  },
+  }
+  // {
+  //   id: 'proj-2',
+  //   title: 'E-Commerce Store Frontend',
+  //   description: 'Modern responsive e-commerce platform with product filtering, shopping cart, and checkout flow.',
+  //   tags: ['React.js', 'Redux', 'Tailwind CSS', 'Stripe API'],
+  //   repository: 'https://github.com/mohitthakur22',
+  //   image: '🛒',
+  // },
+  // {
+  //   id: 'proj-3',
+  //   title: 'Weather App',
+  //   description: 'Real-time weather application with location-based forecasts and weather analytics.',
+  //   tags: ['React.js', 'OpenWeather API', 'Axios', 'Chart.js'],
+  //   repository: 'https://github.com/mohitthakur22',
+  //   image: '🌤️',
+  // },
 ]
 
 export const testimonials = [
@@ -213,4 +213,4 @@ export const skillsProficiency = [
   { skill: 'Git/GitHub', proficiency: 88, icon: '📦' },
 ]
 
-export const resumeUrl = '/resume.pdf'
+export const resumeUrl = '/Mohit_Thakur_Resume.pdf'
