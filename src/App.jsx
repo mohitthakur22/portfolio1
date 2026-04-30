@@ -35,7 +35,7 @@ function App() {
       {/* Simple footer */}
       <footer className="bg-bg border-t border-border px-8 md:px-12 py-8">
         <div className="max-w-[1200px] mx-auto text-center text-muted text-sm">
-          <p>&copy; 2024 Mohit Thakur. Built with React & Vite.</p>
+          <p>&copy; 2026 Mohit Thakur. Built with React & Vite.</p>
         </div>
       </footer>
     </>

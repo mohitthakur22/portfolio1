@@ -16,7 +16,7 @@ export default function Contact() {
         </div>
 
         {/* Contact Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 max-w-[600px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 max-w-[700px] mx-auto">
           <a
             href={`mailto:${personal.email}`}
             className="bg-surface2 border border-border rounded-2xl p-6 hover:border-lime/50
