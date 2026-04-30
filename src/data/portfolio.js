@@ -213,4 +213,4 @@ export const skillsProficiency = [
   { skill: 'Git/GitHub', proficiency: 88, icon: '📦' },
 ]
 
-export const resumeUrl = '/Mohit_Thakur_Resume.pdf'
+export const resumeUrl = '/resume.pdf'
