@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quest Global — FE Dev Interview Prep</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #181c24;
+    --border: #1e2330;
+    --accent: #4fffb0;
+    --accent2: #ff6b6b;
+    --accent3: #ffd166;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --radius: 12px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,255,176,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,255,176,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  header {
+    padding: 64px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    background: rgba(79,255,176,0.08);
+    border: 1px solid rgba(79,255,176,0.2);
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.15;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 560px;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 24px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .meta-item span.dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* Progress bar */
+  .progress-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .progress-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .progress-bar-outer {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+
+  .progress-bar-inner {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), #00c8ff);
+    border-radius: 100px;
+    transition: width 0.6s cubic-bezier(.4,0,.2,1);
+  }
+
+  .progress-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 6px;
+    margin-bottom: 32px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tab-btn {
+    flex: 1;
+    min-width: max-content;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .tab-btn.active {
+    background: var(--surface2);
+    color: var(--text);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  }
+
+  .tab-btn:hover:not(.active) { color: var(--text); }
+
+  /* Panels */
+  .panel { display: none; }
+  .panel.active { display: block; animation: fadeIn 0.25s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Section heading */
+  .section-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-heading::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Q&A Cards */
+  .qa-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
+
+  .qa-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .qa-card:hover { border-color: rgba(79,255,176,0.25); }
+  .qa-card.done { border-color: rgba(79,255,176,0.4); }
+  .qa-card.done .qa-q { color: var(--accent); }
+
+  .qa-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 20px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .qa-check {
+    width: 20px; height: 20px;
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .qa-card.done .qa-check {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .qa-check svg { display: none; }
+  .qa-card.done .qa-check svg { display: block; }
+
+  .qa-q {
+    flex: 1;
+    font-weight: 500;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .qa-toggle {
+    margin-left: auto;
+    flex-shrink: 0;
+    color: var(--muted);
+    font-size: 18px;
+    transition: transform 0.2s;
+    padding-left: 12px;
+  }
+
+  .qa-card.open .qa-toggle { transform: rotate(180deg); }
+
+  .qa-body {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 20px;
+    background: var(--surface2);
+  }
+
+  .qa-card.open .qa-body { display: block; }
+
+  .qa-body p { color: #c5c9d6; font-size: 0.9rem; margin-bottom: 10px; }
+  .qa-body p:last-child { margin-bottom: 0; }
+
+  .qa-tip {
+    margin-top: 14px;
+    padding: 12px 16px;
+    background: rgba(79,255,176,0.06);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    font-size: 0.85rem;
+    color: var(--accent);
+  }
+
+  .qa-tip strong { display: block; margin-bottom: 4px; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* Tag chips */
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+
+  .chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    border: 1px solid;
+  }
+
+  .chip-green  { color: var(--accent);  border-color: rgba(79,255,176,0.3);  background: rgba(79,255,176,0.06); }
+  .chip-red    { color: var(--accent2); border-color: rgba(255,107,107,0.3); background: rgba(255,107,107,0.06); }
+  .chip-yellow { color: var(--accent3); border-color: rgba(255,209,102,0.3); background: rgba(255,209,102,0.06); }
+
+  /* Skill matrix */
+  .skill-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .skill-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+
+  .skill-card h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    color: var(--muted);
+  }
+
+  .skill-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .skill-name { font-size: 0.9rem; }
+
+  .skill-bar-outer {
+    width: 100px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+
+  .skill-bar-inner {
+    height: 100%;
+    border-radius: 100px;
+    background: linear-gradient(90deg, var(--accent), #00c8ff);
+  }
+
+  /* Checklist */
+  .checklist { display: flex; flex-direction: column; gap: 10px; margin-bottom: 40px; }
+
+  .cl-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .cl-item:hover { border-color: rgba(79,255,176,0.2); }
+  .cl-item.done { border-color: rgba(79,255,176,0.3); }
+  .cl-item.done .cl-box { background: var(--accent); border-color: var(--accent); }
+  .cl-item.done .cl-text { text-decoration: line-through; color: var(--muted); }
+
+  .cl-box {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .cl-box svg { display: none; }
+  .cl-item.done .cl-box svg { display: block; }
+
+  /* Resources */
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+
+  .resource-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    text-decoration: none;
+    display: block;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .resource-card:hover {
+    border-color: rgba(79,255,176,0.3);
+    transform: translateY(-2px);
+  }
+
+  .resource-card .r-icon { font-size: 1.4rem; margin-bottom: 10px; }
+  .resource-card .r-title { font-size: 0.95rem; font-weight: 500; margin-bottom: 4px; color: var(--text); }
+  .resource-card .r-desc { font-size: 0.8rem; color: var(--muted); }
+
+  /* Code block */
+  pre {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: #a8d8ff;
+    margin: 12px 0;
+  }
+
+  /* Alert box */
+  .alert {
+    background: rgba(255,209,102,0.06);
+    border: 1px solid rgba(255,209,102,0.25);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 0.88rem;
+    color: var(--accent3);
+    margin-bottom: 24px;
+  }
+
+  .alert strong { display: block; margin-bottom: 4px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <div class="badge">Interview Prep Guide</div>
+    <h1>Quest Global<br><em>Front End Developer</em></h1>
+    <p class="subtitle">3–8 years experience · Hybrid · Bengaluru · 3 openings · Posted 1 day ago</p>
+    <div class="meta-row">
+      <div class="meta-item"><span class="dot"></span> HTML · CSS · JavaScript</div>
+      <div class="meta-item"><span class="dot"></span> Node.js · AWS</div>
+      <div class="meta-item"><span class="dot"></span> Docker · Helm · Microservices</div>
+    </div>
+  </header>
+
+  <div class="progress-wrap">
+    <span class="progress-label">PREP PROGRESS</span>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="progressBar"></div>
+    </div>
+    <span class="progress-count" id="progressCount">0 / 0 done</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="questions">💬 Questions</button>
+    <button class="tab-btn" data-tab="skills">📊 Skill Map</button>
+    <button class="tab-btn" data-tab="checklist">✅ Action Plan</button>
+    <button class="tab-btn" data-tab="resources">📚 Resources</button>
+  </div>
+
+  <!-- QUESTIONS PANEL -->
+  <div class="panel active" id="tab-questions">
+
+    <div class="alert">
+      <strong>💡 Strategy</strong>
+      Quest Global serves engineering-heavy clients (aerospace, automotive, med-tech). Frame your answers around <em>reliability, precision, and cross-functional delivery</em>—not just code.
+    </div>
+
+    <div class="section-heading">Frontend Core</div>
+    <div class="qa-list">
+
+      <div class="qa-card" data-id="q1">
+        <div class="qa-header">
+          <div class="qa-check" onclick="toggleDone(event,'q1')">
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="qa-q">Explain the difference between <code>display: flex</code> and <code>display: grid</code>. When do you choose one over the other?</div>
+          <div class="qa-toggle">⌄</div>
+        </div>
+        <div class="qa-body">
+          <div class="chip-row">
+            <span class="chip chip-green">CSS · Layout</span>
+            <span class="chip chip-red">High Priority</span>
+          </div>
+          <p><strong>Flexbox</strong> is one-dimensional — it controls flow along a single axis (row or column). Great for navbars, button groups, card rows, and anything where items just need to line up.</p>
+          <p><strong>Grid</strong> is two-dimensional — it gives you explicit control over rows AND columns simultaneously. Ideal for page layouts, dashboards, image galleries.</p>
+          <p><em>Rule of thumb:</em> If your layout is driven by content → Flexbox. If content needs to fit into a defined layout → Grid.</p>
+          <div class="qa-tip"><strong>★ Interviewer Tip</strong>Draw a quick ASCII sketch of each. Showing you can reason spatially is impressive.</div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-id="q2">
+        <div class="qa-header">
+          <div class="qa-check" onclick="toggleDone(event,'q2')">
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="qa-q">How do you make a web application responsive? Walk me through your approach.</div>
+          <div class="qa-toggle">⌄</div>
+        </div>
+        <div class="qa-body">
+          <div class="chip-row">
+            <span class="chip chip-green">CSS · Responsive</span>
+            <span class="chip chip-red">High Priority</span>
+          </div>
+          <p>Start with a <strong>mobile-first</strong> CSS approach (min-width media queries). Use <strong>relative units</strong> (%, rem, vw/vh) instead of px for layout. Apply CSS Grid/Flexbox for fluid layouts. Use <code>clamp()</code> for fluid typography. Test across real devices, not just browser DevTools.</p>
+          <pre>/* Mobile-first */
+.card { font-size: clamp(1rem, 2.5vw, 1.25rem); }
+
+@media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }</pre>
+          <div class="qa-tip"><strong>★ Interviewer Tip</strong>Mention Quest Global likely serves enterprise dashboards — bring up how you handle data-heavy tables or charts on mobile.</div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-id="q3">
+        <div class="qa-header">
+          <div class="qa-check" onclick="toggleDone(event,'q3')">
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="qa-q">Explain event bubbling, event capturing, and <code>stopPropagation()</code> in JavaScript.</div>
+          <div class="qa-toggle">⌄</div>
+        </div>
+        <div class="qa-body">
+          <div class="chip-row">
+            <span class="chip chip-green">JavaScript</span>
+            <span class="chip chip-red">High Priority</span>
+          </div>
+          <p><strong>Bubbling</strong>: Events travel from the target element UP through its ancestors (default). <strong>Capturing</strong>: Events travel DOWN from the document root to the target. Pass <code>true</code> as the third argument to <code>addEventListener</code> to use capturing.</p>
+          <p><code>stopPropagation()</code> halts further propagation. <code>stopImmediatePropagation()</code> also prevents other listeners on the same element.</p>
+          <pre>parent.addEventListener('click', () => console.log('parent'), true); // capture
+child.addEventListener('click', (e) => {
+  e.stopPropagation();
+  console.log('child only');
+});</pre>
+          <div class="qa-tip"><strong>★ Interviewer Tip</strong>Mention event delegation as a practical use of bubbling — attaching one listener to a parent instead of many children.</div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-id="q4">
+        <div class="qa-header">
+          <div class="qa-check" onclick="toggleDone(event,'q4')">
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="qa-q">What is the virtual DOM and how does reconciliation work in React?</div>
+          <div class="qa-toggle">⌄</div>
+        </div>
+        <div class="qa-body">
+          <div class="chip-row">
+            <span class="chip chip-green">React</span>
+            <span class="chip chip-red">High Priority</span>
+          </div>
+          <p>The <strong>Virtual DOM</strong> is a lightweight in-memory representation of the real DOM. When state changes, React creates a new virtual DOM tree and diffs it against the previous one (<strong>reconciliation</strong>). Only the minimal set of real DOM mutations is applied.</p>
+          <p>React's diffing algorithm operates in O(n) with two heuristics: (1) elements of different types produce different trees; (2) <code>key</code> props help identify list items across renders.</p>
+          <div class="qa-tip"><strong>★ Interviewer Tip</strong>Mention React 18's concurrent rendering and how fiber architecture allows interruptible rendering for better UX.</div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-id="q5">
+        <div class="qa-header">
+          <div class="qa-check" onclick="toggleDone(event,'q5')">
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="qa-q">How do you optimize the performance of a React application?</div>
+          <div class="qa-toggle">⌄</div>
+        </div>
+        <div class="qa-body">
+          <div class="chip-row">
+            <span class="chip chip-green">React · Performance</span>
+            <span class="chip chip-red">High Priority</span>
+          </div>
+          <p>Key strategies: <strong>Code splitting</strong> with <code>React.lazy</code> + <code>Suspense</code>. <strong>Memoization</strong> with <code>React.memo</code>, <code>useMemo</code>, <code>useCallback</code>. <strong>Virtualized lists</strong> for large datasets (react-window). <strong>Lazy loading</strong> images. Profiler to identify bottlenecks. Avoid unnecessary re-renders by lifting state correctly.</p>
+          <pre>const MemoComp = React.memo(({ data }) => <List items={data} />);
+const sorted = useMemo(() => data.sort(...), [data]);</pre>
+          <div class="qa-tip"><strong>★ Interviewer Tip</strong>Quest works with data-intensive engineering dashboards. Mention handling large tabular data with windowing.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-heading">Node.js & Backend</div>
+    <div class="qa-list">
+
+      <div class="qa-card" data-id="q6">
+        <div class="qa-header">
+          <div class="qa-check" onclick="toggleDone(event,'q6')">
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="qa-q">Explain the Node.js event loop. How does it handle asynchronous operations?</div>
+          <div class="qa-toggle">⌄</div>
+        </div>
+        <div class="qa-body">
+          <div class="chip-row">
+            <span class="chip chip-yellow">Node.js</span>
+            <span class="chip chip-red">High Priority</span>
+          </div>
+          <p>Node.js is single-threaded but non-blocking. The <strong>event loop</strong> continuously checks the call stack, and when empty, processes callbacks from the queue. Async I/O (file, network) is offloaded to <strong>libuv</strong>'s thread pool.</p>
+          <p>Phases: timers → pending callbacks → idle → poll → check (setImmediate) → close callbacks. Microtasks (Promises) run between each phase.</p>
+          <div class="qa-tip"><strong>★ Interviewer Tip</strong>Be ready to explain why CPU-bound tasks block the event loop and how worker threads solve that.</div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-id="q7">
+        <div class="qa-header">
+          <div class="qa-check" onclick="toggleDone(event,'q7')">
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="qa-q">How would you design a REST API for a microservices-based application?</div>
+          <div class="qa-toggle">⌄</div>
+        </div>
+        <div class="qa-body">
+          <div class="chip-row">
+            <span class="chip chip-yellow">Node.js · Microservices</span>
+            <span class="chip chip-red">High Priority</span>
+          </div>
+          <p>Key principles: <strong>Stateless</strong> endpoints, proper HTTP verbs (GET/POST/PUT/DELETE), meaningful status codes, versioning (<code>/api/v1/</code>), pagination, and consistent error envelopes. In a microservices setup: each service owns its domain, communicates via REST or events (Kafka/RabbitMQ), has an API Gateway for routing.</p>
+          <pre>GET    /api/v1/users        → list
+POST   /api/v1/users        → create
+GET    /api/v1/users/:id    → detail
+PATCH  /api/v1/users/:id    → update</pre>
+          <div class="qa-tip"><strong>★ Interviewer Tip</strong>Mention OpenAPI/Swagger for documentation and contract-first design. Quest values structured engineering.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-heading">AWS, Docker & DevOps</div>
+    <div class="qa-list">
+
+      <div class="qa-card" data-id="q8">
+        <div class="qa-header">
+          <div class="qa-check" onclick="toggleDone(event,'q8')">
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="qa-q">What AWS services would you use to deploy a React + Node.js application? Walk me through the architecture.</div>
+          <div class="qa-toggle">⌄</div>
+        </div>
+        <div class="qa-body">
+          <div class="chip-row">
+            <span class="chip chip-green">AWS</span>
+            <span class="chip chip-red">High Priority</span>
+          </div>
+          <p><strong>Frontend:</strong> S3 (static hosting) + CloudFront (CDN + HTTPS). <strong>Backend:</strong> ECS/EKS for containers, or Lambda for serverless APIs. <strong>Database:</strong> RDS (relational) or DynamoDB (NoSQL). <strong>CI/CD:</strong> CodePipeline or GitHub Actions. <strong>Secrets:</strong> AWS Secrets Manager. <strong>DNS:</strong> Route 53.</p>
+          <div class="qa-tip"><strong>★ Interviewer Tip</strong>Mention IAM roles and least-privilege access. Security awareness stands out at engineering firms.</div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-id="q9">
+        <div class="qa-header">
+          <div class="qa-check" onclick="toggleDone(event,'q9')">
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="qa-q">What is Helm and why would you use it over plain Kubernetes manifests?</div>
+          <div class="qa-toggle">⌄</div>
+        </div>
+        <div class="qa-body">
+          <div class="chip-row">
+            <span class="chip chip-green">Helm · Kubernetes</span>
+            <span class="chip chip-yellow">Medium Priority</span>
+          </div>
+          <p><strong>Helm</strong> is a package manager for Kubernetes. It bundles K8s YAML manifests into reusable, versioned <em>charts</em> with template variables. Benefits: avoid YAML duplication, manage environment configs with <code>values.yaml</code>, rollback deployments, share charts across teams.</p>
+          <pre>helm install my-app ./chart --set image.tag=v2.1.0
+helm rollback my-app 1  # revert to revision 1</pre>
+          <div class="qa-tip"><strong>★ Interviewer Tip</strong>If you've used it, mention Helm in CI/CD pipelines (GitHub Actions → helm upgrade). If not, be honest but show conceptual understanding.</div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-id="q10">
+        <div class="qa-header">
+          <div class="qa-check" onclick="toggleDone(event,'q10')">
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="qa-q">Explain Docker's layered file system and why it matters for build performance.</div>
+          <div class="qa-toggle">⌄</div>
+        </div>
+        <div class="qa-body">
+          <div class="chip-row">
+            <span class="chip chip-green">Docker</span>
+            <span class="chip chip-yellow">Medium Priority</span>
+          </div>
+          <p>Docker images are built from <strong>layers</strong> — each <code>RUN</code>/<code>COPY</code>/<code>ADD</code> instruction creates an immutable layer. Layers are cached, so if a layer hasn't changed, Docker reuses it. This is why you should copy <code>package.json</code> and run <code>npm install</code> BEFORE copying app source — the node_modules layer is cached unless dependencies change.</p>
+          <pre>COPY package*.json ./          # cache this layer
+RUN npm ci
+COPY . .                       # invalidates only from here</pre>
+          <div class="qa-tip"><strong>★ Interviewer Tip</strong>Mention multi-stage builds to keep production images lean (builder stage vs runtime stage).</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-heading">Behavioral & Culture Fit</div>
+    <div class="qa-list">
+
+      <div class="qa-card" data-id="q11">
+        <div class="qa-header">
+          <div class="qa-check" onclick="toggleDone(event,'q11')">
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="qa-q">Tell me about a time you worked across frontend, backend, and DevOps in the same project.</div>
+          <div class="qa-toggle">⌄</div>
+        </div>
+        <div class="qa-body">
+          <div class="chip-row">
+            <span class="chip chip-red">Behavioral</span>
+            <span class="chip chip-red">High Priority</span>
+          </div>
+          <p>Use the <strong>STAR format</strong>: Situation → Task → Action → Result. Quest explicitly wants full-stack flexibility — this question is almost certain. Prepare a story where you touched all three layers, and quantify the outcome (reduced deploy time by X%, improved load time, etc.).</p>
+          <div class="qa-tip"><strong>★ Quest Culture Fit</strong>Quest values "hunger, humility, and aspiration." End your story with what you learned, not just what you did.</div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-id="q12">
+        <div class="qa-header">
+          <div class="qa-check" onclick="toggleDone(event,'q12')">
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="qa-q">How do you approach collaborating with cross-functional teams (designers, backend engineers, DevOps)?</div>
+          <div class="qa-toggle">⌄</div>
+        </div>
+        <div class="qa-body">
+          <div class="chip-row">
+            <span class="chip chip-red">Behavioral</span>
+            <span class="chip chip-yellow">Medium Priority</span>
+          </div>
+          <p>Talk about: shared documentation (Confluence/Notion), API contracts defined before coding (OpenAPI spec), design handoff tools (Figma), daily standups, and proactive communication when blockers arise. Mention respecting each team's constraints.</p>
+          <div class="qa-tip"><strong>★ Quest Culture Fit</strong>Their JD explicitly mentions cross-functional collaboration. Show that you initiate, not just respond.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SKILLS PANEL -->
+  <div class="panel" id="tab-skills">
+    <div class="alert">
+      <strong>📋 How to read this</strong>
+      Bar length = how deeply the JD emphasizes this skill. Use it to prioritize your revision.
+    </div>
+    <div class="skill-grid">
+      <div class="skill-card">
+        <h4>🎨 Frontend</h4>
+        <div class="skill-item"><span class="skill-name">HTML5 / Semantic</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width:95%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">CSS3 / Animations</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width:95%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">JavaScript (ES6+)</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width:95%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">React / Vue / Angular</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width:80%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">Responsive Design</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width:90%"></div></div></div>
+      </div>
+      <div class="skill-card">
+        <h4>⚙️ Backend</h4>
+        <div class="skill-item"><span class="skill-name">Node.js / Express</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width:85%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">Python / FastAPI</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width:55%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">REST API Design</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width:80%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">Microservices</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width:75%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">Java (optional)</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width:40%"></div></div></div>
+      </div>
+      <div class="skill-card">
+        <h4>☁️ Cloud & DevOps</h4>
+        <div class="skill-item"><span class="skill-name">AWS (S3/ECS/EC2)</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width:80%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">Docker</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width:80%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">Helm / Kubernetes</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width:70%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">CI/CD Pipelines</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width:75%"></div></div></div>
+        <div class="skill-item"><span class="skill-name">AI Dev Environments</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width:40%"></div></div></div>
+      </div>
+    </div>
+
+    <div class="section-heading">Questions to Ask Them</div>
+    <div class="qa-list">
+      <div class="qa-card" data-id="ask1">
+        <div class="qa-header">
+          <div class="qa-check" onclick="toggleDone(event,'ask1')"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="qa-q">What does the AI-based development environment role look like day-to-day?</div>
+          <div class="qa-toggle">⌄</div>
+        </div>
+        <div class="qa-body"><p>The JD mentions "AI-based development environments" vaguely. Ask for specifics — are they using GitHub Copilot, custom LLM tools, or building AI-assisted features? This shows initiative.</p></div>
+      </div>
+      <div class="qa-card" data-id="ask2">
+        <div class="qa-header">
+          <div class="qa-check" onclick="toggleDone(event,'ask2')"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="qa-q">What industry domains will this team primarily serve? (Aerospace, auto, med-tech?)</div>
+          <div class="qa-toggle">⌄</div>
+        </div>
+        <div class="qa-body"><p>Quest serves multiple verticals. Knowing which one helps you tailor follow-up conversations and shows you've researched them beyond the JD.</p></div>
+      </div>
+      <div class="qa-card" data-id="ask3">
+        <div class="qa-header">
+          <div class="qa-check" onclick="toggleDone(event,'ask3')"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="qa-q">How does the team balance frontend specialization vs. the full-stack expectations in this role?</div>
+          <div class="qa-toggle">⌄</div>
+        </div>
+        <div class="qa-body"><p>The JD asks for frontend + backend + DevOps. Clarifying the actual day-to-day split prevents surprises and shows you're thoughtful about role fit.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKLIST PANEL -->
+  <div class="panel" id="tab-checklist">
+    <div class="section-heading">7-Day Action Plan</div>
+    <div class="checklist">
+      <div class="cl-item" data-id="cl1" onclick="toggleCl('cl1')">
+        <div class="cl-box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="cl-text"><strong>Day 1 — JavaScript Deep Dive</strong><br>Review closures, prototypal inheritance, async/await, Promises, and the event loop. Do 3–4 LeetCode medium JS problems.</div>
+      </div>
+      <div class="cl-item" data-id="cl2" onclick="toggleCl('cl2')">
+        <div class="cl-box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="cl-text"><strong>Day 2 — React & Performance</strong><br>Revise hooks (useEffect deps, custom hooks), reconciliation, and code splitting. Build one small optimized component from scratch.</div>
+      </div>
+      <div class="cl-item" data-id="cl3" onclick="toggleCl('cl3')">
+        <div class="cl-box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="cl-text"><strong>Day 3 — Node.js & REST APIs</strong><br>Review event loop internals, middleware patterns, error handling in Express. Trace through one full request → response lifecycle.</div>
+      </div>
+      <div class="cl-item" data-id="cl4" onclick="toggleCl('cl4')">
+        <div class="cl-box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="cl-text"><strong>Day 4 — Docker & Microservices</strong><br>Write a multi-stage Dockerfile. Pull a sample app, containerize it, test locally with docker-compose. Understand CMD vs ENTRYPOINT.</div>
+      </div>
+      <div class="cl-item" data-id="cl5" onclick="toggleCl('cl5')">
+        <div class="cl-box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="cl-text"><strong>Day 5 — AWS Architecture</strong><br>Read AWS well-architected framework basics. Sketch a React + Node.js deployment on paper: S3, CloudFront, ECS, RDS, Route 53.</div>
+      </div>
+      <div class="cl-item" data-id="cl6" onclick="toggleCl('cl6')">
+        <div class="cl-box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="cl-text"><strong>Day 6 — Helm & CI/CD</strong><br>Read Helm docs, understand charts vs releases vs values. Review a sample GitHub Actions workflow for build → test → deploy.</div>
+      </div>
+      <div class="cl-item" data-id="cl7" onclick="toggleCl('cl7')">
+        <div class="cl-box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="cl-text"><strong>Day 7 — Behavioral + Mock Interview</strong><br>Prepare 3 STAR stories. Research Quest Global's recent projects/clients. Run one timed mock interview aloud.</div>
+      </div>
+      <div class="cl-item" data-id="cl8" onclick="toggleCl('cl8')">
+        <div class="cl-box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#0a0c10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="cl-text"><strong>Before Interview Day</strong><br>Update resume with keywords: microservices, Helm, AWS, CI/CD. Prepare 3 questions to ask the interviewer. Sleep well.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESOURCES PANEL -->
+  <div class="panel" id="tab-resources">
+    <div class="section-heading">Curated Study Links</div>
+    <div class="resource-grid">
+      <a class="resource-card" href="https://javascript.info" target="_blank">
+        <div class="r-icon">📖</div>
+        <div class="r-title">The Modern JavaScript Tutorial</div>
+        <div class="r-desc">Best free resource for JS fundamentals to advanced. Cover closures, prototypes, async.</div>
+      </a>
+      <a class="resource-card" href="https://react.dev/learn" target="_blank">
+        <div class="r-icon">⚛️</div>
+        <div class="r-title">React Official Docs</div>
+        <div class="r-desc">Start with the new docs — hooks, Suspense, and concurrent features explained clearly.</div>
+      </a>
+      <a class="resource-card" href="https://docs.docker.com/get-started/" target="_blank">
+        <div class="r-icon">🐳</div>
+        <div class="r-title">Docker Get Started Guide</div>
+        <div class="r-desc">Official tutorial to understand containers, images, multi-stage builds, and compose.</div>
+      </a>
+      <a class="resource-card" href="https://helm.sh/docs/intro/quickstart/" target="_blank">
+        <div class="r-icon">⎈</div>
+        <div class="r-title">Helm Quickstart</div>
+        <div class="r-desc">Official quickstart — install Helm, explore a chart, understand values.yaml in 30 min.</div>
+      </a>
+      <a class="resource-card" href="https://aws.amazon.com/architecture/well-architected/" target="_blank">
+        <div class="r-icon">☁️</div>
+        <div class="r-title">AWS Well-Architected Framework</div>
+        <div class="r-desc">Understand AWS architecture best practices. Great for system design questions.</div>
+      </a>
+      <a class="resource-card" href="https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick" target="_blank">
+        <div class="r-icon">🔄</div>
+        <div class="r-title">Node.js Event Loop Guide</div>
+        <div class="r-desc">Official Node.js explanation of the event loop phases — bookmark and re-read this.</div>
+      </a>
+      <a class="resource-card" href="https://frontendmasters.com/courses/complete-intro-to-containers/" target="_blank">
+        <div class="r-icon">🎓</div>
+        <div class="r-title">Intro to Containers — FEM</div>
+        <div class="r-desc">Frontend Masters course covering Docker deeply. Great if you want structured learning.</div>
+      </a>
+      <a class="resource-card" href="https://www.questglobal.com/newsroom/" target="_blank">
+        <div class="r-icon">🏢</div>
+        <div class="r-title">Quest Global Newsroom</div>
+        <div class="r-desc">Read recent projects and announcements before your interview. Know the company.</div>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Accordion
+  document.querySelectorAll('.qa-header').forEach(header => {
+    header.addEventListener('click', (e) => {
+      if (e.target.closest('.qa-check')) return;
+      const card = header.closest('.qa-card');
+      card.classList.toggle('open');
+    });
+  });
+
+  // Q&A done toggle
+  function toggleDone(e, id) {
+    e.stopPropagation();
+    const card = document.querySelector(`.qa-card[data-id="${id}"]`);
+    card.classList.toggle('done');
+    updateProgress();
+  }
+
+  // Checklist toggle
+  function toggleCl(id) {
+    const item = document.querySelector(`.cl-item[data-id="${id}"]`);
+    item.classList.toggle('done');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const total = document.querySelectorAll('.qa-card, .cl-item').length;
+    const done = document.querySelectorAll('.qa-card.done, .cl-item.done').length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressCount').textContent = done + ' / ' + total + ' done';
+  }
+
+  updateProgress();
+</script>
+</body>
+</html>
