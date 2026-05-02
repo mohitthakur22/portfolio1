@@ -12,6 +12,7 @@ import Blog from './Blog'
 import Achievements from './Achievements'
 import Contact from './Contact'
 import Cursor from './Cursor'
+import Footer from './Footer'
 import './App.css'
 
 function App() {
@@ -31,13 +32,7 @@ function App() {
       {/* <Achievements /> */}
       {/* <Blog /> */}
       <Contact />
-      
-      {/* Simple footer */}
-      <footer className="bg-bg border-t border-border px-8 md:px-12 py-8">
-        <div className="max-w-[1200px] mx-auto text-center text-muted text-sm">
-          <p>&copy; 2026 Mohit Thakur. Built with React & Vite.</p>
-        </div>
-      </footer>
+      <Footer />
     </>
   )
 }
