@@ -12,6 +12,8 @@ export function ThemeProvider({ children }) {
 
     setIsDark(shouldBeDark)
     document.documentElement.style.colorScheme = shouldBeDark ? 'dark' : 'light'
+    document.documentElement.classList.toggle('dark', shouldBeDark)
+    document.documentElement.classList.toggle('light', !shouldBeDark)
   }, [])
 
   const toggleTheme = () => {
@@ -19,6 +21,8 @@ export function ThemeProvider({ children }) {
     setIsDark(newIsDark)
     localStorage.setItem('theme', newIsDark ? 'dark' : 'light')
     document.documentElement.style.colorScheme = newIsDark ? 'dark' : 'light'
+    document.documentElement.classList.toggle('dark', newIsDark)
+    document.documentElement.classList.toggle('light', !newIsDark)
   }
 
   return (
