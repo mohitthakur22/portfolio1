@@ -76,14 +76,14 @@ export default function Navbar() {
         >
           Resume ↓
         </a>
-        {/* <button
+        <button
           onClick={toggleTheme}
           className="flex items-center justify-center w-10 h-10 rounded-full border border-border
             hover:border-lime/50 transition-colors duration-200"
           title="Toggle Dark Mode"
         >
           {isDark ? '☀️' : '🌙'}
-        </button> */}
+        </button>
         <a
           href={`mailto:${personal.email}`}
           className="font-mono text-[11px] tracking-widest uppercase
@@ -119,9 +119,9 @@ export default function Navbar() {
           ))}
           <div className="flex gap-2 pt-2 border-t border-border">
             <a href={resumeUrl} download="Mohit_Thakur_Resume.pdf" className="btn-cyan flex-1 justify-center text-center">Resume</a>
-            {/* <button onClick={toggleTheme} className="px-3 py-2 rounded border border-border hover:bg-surface">
+            <button onClick={toggleTheme} className="px-3 py-2 rounded border border-border hover:bg-surface">
               {isDark ? '☀️' : '🌙'}
-            </button> */}
+            </button>
           </div>
           <a href={`mailto:${personal.email}`} className="btn-lime mt-2 w-full justify-center">Hire Me</a>
         </div>
